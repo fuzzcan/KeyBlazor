@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.0-preview.5.24306.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="InputManager.razor">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="KeyboardEventService.cs">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="wwwroot\keyBlazorKeyboardEventListener.js" />
+      <EmbeddedResource Include="wwwroot\keyBlazorKeyboardEventListener.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

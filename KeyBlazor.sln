@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyBlazor", "KeyBlazor\KeyBlazor.csproj", "{EF909962-6C62-443D-8A66-E00AEE00504C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{02C8AC84-D091-406D-8F99-76433F0F0BE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{2D6AD7AD-F3A8-47D1-9F36-6B24E936E255}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF909962-6C62-443D-8A66-E00AEE00504C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF909962-6C62-443D-8A66-E00AEE00504C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF909962-6C62-443D-8A66-E00AEE00504C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF909962-6C62-443D-8A66-E00AEE00504C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6AD7AD-F3A8-47D1-9F36-6B24E936E255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6AD7AD-F3A8-47D1-9F36-6B24E936E255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6AD7AD-F3A8-47D1-9F36-6B24E936E255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6AD7AD-F3A8-47D1-9F36-6B24E936E255}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
