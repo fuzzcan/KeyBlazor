@@ -1,3 +1,12 @@
+//  ____ ____ ____ ____ ____ ____ ____ ____ ____
+// ||K |||E |||Y |||B |||L |||A |||Z |||O |||R || 
+// ||__|||__|||__|||__|||__|||__|||__|||__|||__||
+// |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
+
+
+let keyHoldInterval = 100; // Default interval time in milliseconds
+let heldKeys = {};
+
 function createKeyboardEventObject(event) {
     return {
         key: event.key,
@@ -9,23 +18,23 @@ function createKeyboardEventObject(event) {
     };
 }
 
-let heldKeys = {};
+export function setKeyHoldInterval(interval) {
+    keyHoldInterval = interval;
+}
 
 export function addKeyboardEventListener() {
-    console.log("Added keyboard event listener");
-
-    document.addEventListener("keydown", function (event) {
+    document.addEventListener("keydown", (event) => {
         if (!heldKeys[event.code]) {
             const keyboardEventObject = createKeyboardEventObject(event);
             DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyDownEvent', keyboardEventObject);
 
             heldKeys[event.code] = setInterval(() => {
                 DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyHeldEvent', keyboardEventObject);
-            }, 100); // Adjust the interval as needed
+            }, keyHoldInterval);
         }
     });
 
-    document.addEventListener("keyup", function (event) {
+    document.addEventListener("keyup", (event) => {
         const keyboardEventObject = createKeyboardEventObject(event);
         DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyReleasedEvent', keyboardEventObject);
 

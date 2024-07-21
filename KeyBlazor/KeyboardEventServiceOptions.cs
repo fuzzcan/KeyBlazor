@@ -2,5 +2,6 @@
 
 public class KeyboardEventServiceOptions
 {
-    public bool EnableLogging { get; set; }
+    public int KeyHoldInterval { get; set; } = 100;
+    public List<string?> Shortcuts { get; set; } = [];
 }

@@ -7,7 +7,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped(sp => new HttpClient
+    { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddOidcAuthentication(options =>
 {
@@ -16,14 +17,14 @@ builder.Services.AddOidcAuthentication(options =>
     builder.Configuration.Bind("Local", options.ProviderOptions);
 });
 
-builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Logging.SetMinimumLevel(LogLevel.Information);
+// Register logging 
+// builder.Logging.AddConfiguration(
+//     builder.Configuration.GetSection("Logging"));
+// builder.Logging.SetMinimumLevel(LogLevel.Information);
 
-// Register options and configure KeyboardEventService
-builder.Services.Configure<KeyboardEventServiceOptions>(options =>
-{
-    options.EnableLogging = false; // Set to false to disable logging
-});
+// Register KeyboardEventService as a singleton and configure options
+builder.Services.Configure<KeyboardEventServiceOptions>(
+    builder.Configuration.GetSection("KeyboardEventServiceOptions"));
 builder.Services.AddScoped<KeyboardEventService>();
 
 await builder.Build().RunAsync();
