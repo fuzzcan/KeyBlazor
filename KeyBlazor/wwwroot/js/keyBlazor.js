@@ -1,9 +1,3 @@
-//  ____ ____ ____ ____ ____ ____ ____ ____ ____
-// ||K |||E |||Y |||B |||L |||A |||Z |||O |||R || 
-// ||__|||__|||__|||__|||__|||__|||__|||__|||__||
-// |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
-
-
 let keyHoldInterval = 100; // Default interval time in milliseconds
 let heldKeys = {};
 
@@ -37,7 +31,6 @@ export function addKeyboardEventListener() {
     document.addEventListener("keyup", (event) => {
         const keyboardEventObject = createKeyboardEventObject(event);
         DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyReleasedEvent', keyboardEventObject);
-
         if (heldKeys[event.code]) {
             clearInterval(heldKeys[event.code]);
             delete heldKeys[event.code];

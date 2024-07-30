@@ -36,7 +36,7 @@ public class KeyboardEventService : IAsyncDisposable
 
         _jsReference = DotNetObjectReference.Create(this);
 
-        RegisterShortcuts(this._options.Shortcuts);
+        RegisterShortcuts(_options.Shortcuts);
         _ = InitializeJsAsync();
 
         _instance = this;
@@ -132,9 +132,9 @@ public class KeyboardEventService : IAsyncDisposable
     private void HandleKeyReleased(KeyboardEventArgs evt)
     {
         _logger?.LogDebug("Key up: {Key}", evt.Key);
+        _logger?.LogInformation("YOOHOO");
         KeyUp?.Invoke(evt);
-        _currentSequence
-            .Clear(); // Clear the sequence on key up to reset the state
+        _currentSequence.Clear();
     }
 
     private bool IsMatchingShortcut(KeyboardShortcut shortcut)
@@ -142,13 +142,8 @@ public class KeyboardEventService : IAsyncDisposable
         if (_currentSequence.Count < shortcut.Keys.Length)
             return false;
 
-        for (int i = 0; i < shortcut.Keys.Length; i++)
-        {
-            if (_currentSequence[i] != shortcut.Keys[i])
-                return false;
-        }
-
-        return true;
+        return !shortcut.Keys.Where((t, i) =>
+            _currentSequence[i] != t).Any();
     }
 
     public async ValueTask DisposeAsync()

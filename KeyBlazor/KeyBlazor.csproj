@@ -32,8 +32,10 @@
       <Content Remove="wwwroot\keyBlazorKeyboardEventListener.js" />
     </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="wwwroot\js\keyBlazor.js" />
-    </ItemGroup>
+<!--    <ItemGroup>-->
+<!--      <EmbeddedResource Include="wwwroot\js\keyBlazor.js">-->
+<!--        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+<!--      </EmbeddedResource>-->
+<!--    </ItemGroup>-->
 
 </Project>
