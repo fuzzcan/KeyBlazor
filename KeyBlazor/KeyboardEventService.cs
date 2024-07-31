@@ -113,7 +113,7 @@ public class KeyboardEventService : IAsyncDisposable
         _logger?.LogDebug("Key down: {Key}", evt.Key);
         KeyDown?.Invoke(evt);
 
-        _currentSequence.Add(evt.Code);
+        _currentSequence.Add(evt.Key);
 
         foreach (var shortcut in _shortcuts.Where(IsMatchingShortcut))
         {
@@ -142,8 +142,15 @@ public class KeyboardEventService : IAsyncDisposable
         if (_currentSequence.Count < shortcut.Keys.Length)
             return false;
 
-        return !shortcut.Keys.Where((t, i) =>
-            _currentSequence[i] != t).Any();
+        var isMatch = !_currentSequence.Where((t, i) => t != shortcut.Keys[i])
+            .Any();
+        _logger?.LogDebug(
+            "Checking sequence: {CurrentSequence} against shortcut: {ShortcutKeys} -> Match: {IsMatch}",
+            string.Join("+", _currentSequence),
+            string.Join("+", shortcut.Keys),
+            isMatch);
+
+        return isMatch;
     }
 
     public async ValueTask DisposeAsync()

@@ -22,6 +22,7 @@ export function addKeyboardEventListener() {
             const keyboardEventObject = createKeyboardEventObject(event);
             DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyDownEvent', keyboardEventObject);
 
+            console.log("key code: " + event.keyCode)
             heldKeys[event.code] = setInterval(() => {
                 DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyHeldEvent', keyboardEventObject);
             }, keyHoldInterval);
