@@ -1,6 +1,6 @@
 ﻿namespace KeyBlazor;
 
-public class KeyMap
+public abstract class KeyMap
 {
     public static string Normalize(string key)
     {

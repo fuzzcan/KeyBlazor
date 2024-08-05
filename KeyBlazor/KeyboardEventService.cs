@@ -7,159 +7,143 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KeyBlazor;
-
-public class KeyboardEventService : IAsyncDisposable
+namespace KeyBlazor
 {
-    private static KeyboardEventService? _instance;
-    private readonly ILogger<KeyboardEventService>? _logger;
-    private readonly IJSRuntime _jsRuntime;
-    private IJSObjectReference? _module;
-    private readonly DotNetObjectReference<KeyboardEventService> _jsReference;
-
-    private readonly KeyboardEventServiceOptions _options;
-    private readonly List<KeyboardShortcut> _shortcuts = [];
-    private readonly List<string> _currentSequence = [];
-
-    public event Action<KeyboardEventArgs>? KeyDown;
-    public event Action<KeyboardEventArgs>? KeyUp;
-    public event Action<KeyboardEventArgs>? KeyHeld;
-
-    public KeyboardEventService(
-        IOptions<KeyboardEventServiceOptions> options, IJSRuntime jsRuntime,
-        ILogger<KeyboardEventService>? logger = null)
+    public class KeyboardEventService : IAsyncDisposable
     {
-        _logger = logger;
-        _options = options.Value;
-        _jsRuntime = jsRuntime;
-        _logger?.LogInformation("Added keyboard event service");
+        private static KeyboardEventService? _instance;
+        private readonly ILogger<KeyboardEventService>? _logger;
+        private readonly IJSRuntime _jsRuntime;
+        private IJSObjectReference? _jsModule;
 
-        _jsReference = DotNetObjectReference.Create(this);
+        private readonly DotNetObjectReference<KeyboardEventService>
+            _jsReference;
 
-        RegisterShortcuts(_options.Shortcuts);
-        _ = InitializeJsAsync();
+        private readonly KeyboardEventServiceOptions _options;
+        public  List<Shortcut> RegisteredShortcuts = new();
+        private readonly KeySequence _currentKeySequence = new();
 
-        _instance = this;
-    }
+        public event Action<KeyboardEventArgs>? KeyDown;
+        public event Action<KeyboardEventArgs>? KeyUp;
+        public event Action<KeyboardEventArgs>? KeyHeld;
 
-    private async Task InitializeJsAsync()
-    {
-        const string path = "./_content/KeyBlazor/js/keyBlazor.js";
-        _module = await _jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", path);
-        await SetKeyHoldIntervalAsync(_options.KeyHoldInterval);
-        await AddKeyboardEventListenerAsync();
-    }
-
-    private void RegisterShortcuts(List<string?> shortcutStrings)
-    {
-        foreach (var shortcutString in shortcutStrings)
+        public KeyboardEventService(
+            IOptions<KeyboardEventServiceOptions> options, IJSRuntime jsRuntime,
+            ILogger<KeyboardEventService>? logger = null)
         {
-            try
+            _logger = logger;
+            _options = options.Value;
+            _jsRuntime = jsRuntime;
+            _jsReference = DotNetObjectReference.Create(this);
+            RegisterShortcuts(_options.Shortcuts);
+            _ = InitializeJsAsync();
+            _instance = this;
+            _logger?.LogInformation("Added keyboard event service");
+        }
+
+        private async Task InitializeJsAsync()
+        {
+            const string path = "./_content/KeyBlazor/js/keyBlazor.js";
+            _jsModule =
+                await _jsRuntime.InvokeAsync<IJSObjectReference>("import",
+                    path);
+            await SetKeyHoldIntervalAsync(_options.KeyHoldInterval);
+            await AddKeyboardEventListenerAsync();
+        }
+
+        private void RegisterShortcuts(List<string?> shortcutStrings)
+        {
+            foreach (var shortcutString in shortcutStrings)
             {
-                var shortcut = KeyboardShortcut.Parse(shortcutString);
-                _shortcuts.Add(shortcut);
-                _logger?.LogInformation(
-                    "Added shortcut {ShortcutString}", shortcutString);
+                try
+                {
+                    var shortcut = new Shortcut(shortcutString);
+                    RegisteredShortcuts.Add(shortcut);
+                    _logger?.LogInformation("Added shortcut {ShortcutString}",
+                        shortcutString);
+                }
+                catch (ArgumentException ex)
+                {
+                    _logger?.LogError(
+                        "Error parsing shortcut '{ShortcutString}': {ExMessage}",
+                        shortcutString, ex.Message);
+                }
             }
-            catch (ArgumentException ex)
+        }
+
+        private async Task SetKeyHoldIntervalAsync(int keyHoldInterval)
+        {
+            if (_jsModule == null) return;
+            await _jsModule.InvokeVoidAsync("setKeyHoldInterval",
+                keyHoldInterval, _jsReference);
+            _logger?.LogInformation("Set keyHoldInterval to {KeyHoldInterval}",
+                keyHoldInterval);
+        }
+
+        private async Task AddKeyboardEventListenerAsync()
+        {
+            if (_jsModule == null) return;
+            await _jsModule.InvokeVoidAsync("addKeyboardEventListener",
+                _jsReference);
+            _logger?.LogInformation("Added keyboard event listener");
+        }
+
+        [JSInvokable]
+        public static void InvokeKeyDownEvent(KeyboardEventArgs evt)
+        {
+            _instance?.HandleKeyDown(evt);
+        }
+
+        [JSInvokable]
+        public static void InvokeKeyHeldEvent(KeyboardEventArgs evt)
+        {
+            _instance?.HandleKeyHeld(evt);
+        }
+
+        [JSInvokable]
+        public static void InvokeKeyReleasedEvent(KeyboardEventArgs evt)
+        {
+            _instance?.HandleKeyReleased(evt);
+        }
+
+        private void HandleKeyDown(KeyboardEventArgs evt)
+        {
+            _logger?.LogDebug("Key down: {Key}", evt.Key);
+            KeyDown?.Invoke(evt);
+
+            _currentKeySequence.Add(evt.Key);
+
+            foreach (var shortcut in RegisteredShortcuts.Where(shortcut =>
+                         _currentKeySequence.IsMatching(shortcut)))
             {
-                const string description = "Error parsing shortcut";
-                _logger?.LogError(
-                    "{Message} \'{ShortcutString}\': {ExMessage}",
-                    description, shortcutString, ex.Message);
+                _logger?.LogInformation("Shortcut activated: {Join}",
+                    string.Join("+", shortcut.Keys));
+                // Handle the shortcut activation here
             }
         }
-    }
 
-    private async Task SetKeyHoldIntervalAsync(int keyHoldInterval)
-    {
-        if (_module == null) return;
-        await _module.InvokeVoidAsync("setKeyHoldInterval",
-            keyHoldInterval, _jsReference);
-        _logger?.LogInformation(
-            "Set keyHoldInterval to {KeyHoldInterval}",
-            keyHoldInterval);
-    }
-
-    private async Task AddKeyboardEventListenerAsync()
-    {
-        if (_module == null) return;
-        await _module.InvokeVoidAsync("addKeyboardEventListener",
-            _jsReference);
-        _logger?.LogInformation("Added keyboard event listener");
-    }
-
-    [JSInvokable]
-    public static void InvokeKeyDownEvent(KeyboardEventArgs evt)
-    {
-        _instance?.HandleKeyDown(evt);
-    }
-
-    [JSInvokable]
-    public static void InvokeKeyHeldEvent(KeyboardEventArgs evt)
-    {
-        _instance?.HandleKeyHeld(evt);
-    }
-
-    [JSInvokable]
-    public static void InvokeKeyReleasedEvent(KeyboardEventArgs evt)
-    {
-        _instance?.HandleKeyReleased(evt);
-    }
-
-    private void HandleKeyDown(KeyboardEventArgs evt)
-    {
-        _logger?.LogDebug("Key down: {Key}", evt.Key);
-        KeyDown?.Invoke(evt);
-
-        _currentSequence.Add(evt.Key);
-
-        foreach (var shortcut in _shortcuts.Where(IsMatchingShortcut))
+        private void HandleKeyHeld(KeyboardEventArgs evt)
         {
-            _logger?.LogInformation("Shortcut activated: {Join}",
-                string.Join("+", shortcut.Keys));
-            // Handle the shortcut activation here
-        }
-    }
-
-    private void HandleKeyHeld(KeyboardEventArgs evt)
-    {
-        _logger?.LogInformation("Key held: {Key}", evt.Key);
-        KeyHeld?.Invoke(evt);
-    }
-
-    private void HandleKeyReleased(KeyboardEventArgs evt)
-    {
-        _logger?.LogDebug("Key up: {Key}", evt.Key);
-        _logger?.LogInformation("YOOHOO");
-        KeyUp?.Invoke(evt);
-        _currentSequence.Clear();
-    }
-
-    private bool IsMatchingShortcut(KeyboardShortcut shortcut)
-    {
-        if (_currentSequence.Count < shortcut.Keys.Length)
-            return false;
-
-        var isMatch = !_currentSequence.Where((t, i) => t != shortcut.Keys[i])
-            .Any();
-        _logger?.LogDebug(
-            "Checking sequence: {CurrentSequence} against shortcut: {ShortcutKeys} -> Match: {IsMatch}",
-            string.Join("+", _currentSequence),
-            string.Join("+", shortcut.Keys),
-            isMatch);
-
-        return isMatch;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_module != null)
-        {
-            await _module.DisposeAsync();
+            _logger?.LogInformation("Key held: {Key}", evt.Key);
+            KeyHeld?.Invoke(evt);
         }
 
-        _jsReference?.Dispose();
+        private void HandleKeyReleased(KeyboardEventArgs evt)
+        {
+            _logger?.LogDebug("Key up: {Key}", evt.Key);
+            _logger?.LogInformation("YOOHOO");
+            KeyUp?.Invoke(evt);
+            _currentKeySequence.Clear();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_jsModule != null)
+            {
+                await _jsModule.DisposeAsync();
+            }
+
+            _jsReference?.Dispose();
+        }
     }
 }

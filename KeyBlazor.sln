@@ -2,9 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyBlazor", "KeyBlazor\KeyBlazor.csproj", "{EF909962-6C62-443D-8A66-E00AEE00504C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.WasmOLD", "Examples.WasmOLD\Examples.WasmOLD.csproj", "{02C8AC84-D091-406D-8F99-76433F0F0BE0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{66AFF18D-45C8-4007-9817-59F5CEF522F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.Wasm", "Examples.Wasm\Examples.Wasm.csproj", "{BC671F93-45B0-4B11-8BB4-F37D3A27A73B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wasm", "Wasm\Wasm.csproj", "{5BC8E49A-C9C6-44D0-B022-36E26E5CF4E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,12 @@ Global
 		{EF909962-6C62-443D-8A66-E00AEE00504C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF909962-6C62-443D-8A66-E00AEE00504C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF909962-6C62-443D-8A66-E00AEE00504C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02C8AC84-D091-406D-8F99-76433F0F0BE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC671F93-45B0-4B11-8BB4-F37D3A27A73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC671F93-45B0-4B11-8BB4-F37D3A27A73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC671F93-45B0-4B11-8BB4-F37D3A27A73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC671F93-45B0-4B11-8BB4-F37D3A27A73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BC8E49A-C9C6-44D0-B022-36E26E5CF4E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BC8E49A-C9C6-44D0-B022-36E26E5CF4E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BC8E49A-C9C6-44D0-B022-36E26E5CF4E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BC8E49A-C9C6-44D0-B022-36E26E5CF4E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5BC8E49A-C9C6-44D0-B022-36E26E5CF4E0} = {66AFF18D-45C8-4007-9817-59F5CEF522F6}
 	EndGlobalSection
 EndGlobal

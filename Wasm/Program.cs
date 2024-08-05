@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Examples.Wasm;
+using Wasm;
 using KeyBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
