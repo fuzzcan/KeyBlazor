@@ -6,9 +6,9 @@ public class Shortcut
 
     public Shortcut(string? shortcut)
     {
+        const string message = "Shortcut cannot be null or empty";
         if (string.IsNullOrWhiteSpace(shortcut))
-            throw new ArgumentException("Shortcut cannot be null or empty",
-                nameof(shortcut));
+            throw new ArgumentException(message, nameof(shortcut));
 
         Keys = shortcut.Split('+')
             .Select(k => KeyMap.Normalize(k.Trim()))

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Wasm;
-using KeyBlazor;
+using KeyBlazor.Examples.Wasm;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 var config = builder.Configuration;
@@ -14,14 +13,6 @@ var baseAddress = builder.HostEnvironment.BaseAddress;
 var httpClient = new HttpClient { BaseAddress = new Uri(baseAddress) };
 builder.Services.AddScoped(sp => httpClient);
 
-// Register logging 
-var logging = builder.Logging;
-logging.AddConfiguration(config.GetSection("Logging"));
-logging.SetMinimumLevel(LogLevel.Debug);
-
-// Register KeyboardEventService as a singleton and configure options
-services.Configure<KeyboardEventServiceOptions>(
-   config.GetSection("KeyboardEventServiceOptions"));
-services.AddSingleton<KeyboardEventService>();
+services.AddScoped<KeyBlazor.KeyBlazor>();
 
 await builder.Build().RunAsync();

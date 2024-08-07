@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace KeyBlazor
 {
-    public class KeyboardEventService : IAsyncDisposable
+    public class KeyBlazor : IAsyncDisposable
     {
-        private static KeyboardEventService? _instance;
-        private readonly ILogger<KeyboardEventService>? _logger;
+        private static KeyBlazor? _instance;
+        private readonly ILogger<KeyBlazor>? _logger;
         private readonly IJSRuntime _jsRuntime;
         private IJSObjectReference? _jsModule;
 
-        private readonly DotNetObjectReference<KeyboardEventService>
+        private readonly DotNetObjectReference<KeyBlazor>
             _jsReference;
 
-        private readonly KeyboardEventServiceOptions _options;
+        private readonly Options _options;
         public  List<Shortcut> RegisteredShortcuts = new();
         private readonly KeySequence _currentKeySequence = new();
 
@@ -27,9 +27,9 @@ namespace KeyBlazor
         public event Action<KeyboardEventArgs>? KeyUp;
         public event Action<KeyboardEventArgs>? KeyHeld;
 
-        public KeyboardEventService(
-            IOptions<KeyboardEventServiceOptions> options, IJSRuntime jsRuntime,
-            ILogger<KeyboardEventService>? logger = null)
+        public KeyBlazor(
+            IOptions<Options> options, IJSRuntime jsRuntime,
+            ILogger<KeyBlazor>? logger = null)
         {
             _logger = logger;
             _options = options.Value;

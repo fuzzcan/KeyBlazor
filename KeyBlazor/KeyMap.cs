@@ -4,8 +4,17 @@ public abstract class KeyMap
 {
     public static string Normalize(string key)
     {
-        // Convert to lowercase and map to the standardized form
-        return NormalizationMap.GetValueOrDefault(key, key);
+        if (NormalizationMap.ContainsValue(key))
+        {
+            return key;
+        }
+
+        if (NormalizationMap.TryGetValue(key, out var value))
+        {
+            return value;
+        }
+
+        throw new Exception("Key not valid: " + key);
     }
 
     public static readonly Dictionary<string, string> NormalizationMap = new()

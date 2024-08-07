@@ -1,0 +1,17 @@
+﻿@page "/keyblazor"
+@inject KeyBlazor KeyBlazor
+
+<h3>KeyBlazor Test Component</h3>
+
+<div @ref="keyBlazorDiv" tabindex="0">
+    Press keys here
+</div>
+
+@code {
+    private ElementReference keyBlazorDiv;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+    }
+}

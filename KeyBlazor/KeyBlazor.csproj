@@ -17,13 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="InputManager.razor">
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="KeyboardEventService.cs">
+      <Compile Update="KeyBlazor.cs">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Compile>
     </ItemGroup>
