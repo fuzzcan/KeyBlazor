@@ -1,11 +1,11 @@
 ﻿namespace KeyBlazor;
 
-public class HotKey
+public class Hotkey
 {
     public string[]? Keys { get; private init; }
     public bool PreventDefaultBehaviour { get; set; }
 
-    public HotKey(string? shortcut, bool preventDefaultBehaviour = false)
+    public Hotkey(string? shortcut, bool preventDefaultBehaviour = false)
     {
         const string message = "Shortcut cannot be null or empty";
         if (string.IsNullOrWhiteSpace(shortcut))

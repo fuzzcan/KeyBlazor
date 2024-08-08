@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject KeyBlazorService KeyBlazorService 
+@inject ILogger<MainLayout> logger
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -15,3 +16,14 @@
         </article>
     </main>
 </div>
+
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        var hotkey = new Hotkey("A", false);
+        logger.LogInformation("ERSERSER");
+        await KeyBlazorService.RegisterHotKeyJsAsync(hotkey);
+    }
+
+}

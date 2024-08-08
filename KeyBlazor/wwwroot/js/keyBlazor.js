@@ -17,7 +17,8 @@ export function setKeyHoldInterval(interval) {
     keyHoldInterval = interval;
 }
 
-export function registerHotKey(hotKey) {
+export function registerHotKey() {
+    console.log("OOOOOOOOOOOOOO");
     hotKeys.push(JSON.parse(hotKey));
 }
 

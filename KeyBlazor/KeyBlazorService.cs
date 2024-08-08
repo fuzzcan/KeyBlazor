@@ -19,7 +19,7 @@ public class KeyBlazorService : IAsyncDisposable
     private readonly DotNetObjectReference<KeyBlazorService> _jsReference;
 
     private readonly KeyBlazorOptions _options;
-    public List<HotKey> RegisteredHotKeys = new();
+    public List<Hotkey> RegisteredHotKeys = new();
     private readonly KeySequence _currentKeySequence = new();
 
     public event Action<KeyboardEventArgs>? KeyDown;
@@ -34,7 +34,7 @@ public class KeyBlazorService : IAsyncDisposable
         _options = options.Value;
         _jsRuntime = jsRuntime;
         _jsReference = DotNetObjectReference.Create(this);
-        RegisterHotKeys(_options.Shortcuts);
+        RegisterHotkeys(_options.Shortcuts);
         _ = InitializeJsAsync();
         _logger?.LogInformation("Added keyboard event service");
     }
@@ -48,13 +48,18 @@ public class KeyBlazorService : IAsyncDisposable
         await AddKeyboardEventListenerAsync();
     }
 
-    private void RegisterHotKeys(List<string?> hotKeyStrings)
+    private void RegisterHotkey(Hotkey hotkey)
+    {
+        
+    }
+
+    private void RegisterHotkeys(List<string?> hotKeyStrings)
     {
         foreach (var hotKeyString in hotKeyStrings)
         {
             try
             {
-                var hotKey = new HotKey(hotKeyString);
+                var hotKey = new Hotkey(hotKeyString);
                 RegisteredHotKeys.Add(hotKey);
                 _logger?.LogInformation("Added hotkey {HotKeyString}",
                     hotKeyString);
@@ -86,13 +91,18 @@ public class KeyBlazorService : IAsyncDisposable
         _logger?.LogInformation("Added keyboard event listener");
     }
 
-    private async Task RegisterHotKeyJsAsync(HotKey hotKey)
+    public async Task RegisterHotKeyJsAsync(Hotkey hotkey)
     {
-        if (_jsModule == null) return;
+        _logger.LogInformation("222222");
+        if (_jsModule == null)
+        {
+            _logger.LogInformation("JSMODUKLE NULL");
+            return;
+        }
         await _jsModule.InvokeVoidAsync("registerHotKey",
-            JsonSerializer.Serialize(hotKey));
-        _logger?.LogInformation(
-            "Registered hotkey {HotKey}", hotKey);
+            JsonSerializer.Serialize(hotkey));
+        _logger?.LogInformation("Registered hotkey {@Hotkey}", hotkey);
+        
     }
 
     [JSInvokable("InvokeKeyDownEvent")]
