@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Service.cs">
+      <Compile Update="KeyBlazorService.cs">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Compile>
     </ItemGroup>

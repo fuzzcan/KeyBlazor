@@ -1,5 +1,6 @@
 let keyHoldInterval = 100; // Default interval time in milliseconds
 let heldKeys = {};
+let hotKeys = [];
 
 function createKeyboardEventObject(event) {
     return {
@@ -16,22 +17,42 @@ export function setKeyHoldInterval(interval) {
     keyHoldInterval = interval;
 }
 
-export function addKeyboardEventListener() {
-    document.addEventListener("keydown", (event) => {
-        if (!heldKeys[event.code]) {
-            const keyboardEventObject = createKeyboardEventObject(event);
-            DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyDownEvent', keyboardEventObject);
+export function registerHotKey(hotKey) {
+    hotKeys.push(JSON.parse(hotKey));
+}
 
-            console.log("key code: " + event.keyCode)
+export function addKeyboardEventListener(dotNetHelper) {
+    document.addEventListener("keydown", (event) => {
+        const keyboardEventObject = createKeyboardEventObject(event);
+
+        for (const hotKey of hotKeys) {
+            const match = hotKey.Keys.every((key, index) => {
+                return key === keyboardEventObject[key];
+            });
+
+            if (match) {
+                if (hotKey.PreventDefaultBehaviour) {
+                    event.preventDefault();
+                }
+                dotNetHelper.invokeMethodAsync('InvokeKeyDownEvent', keyboardEventObject);
+                heldKeys[event.code] = setInterval(() => {
+                    dotNetHelper.invokeMethodAsync('InvokeKeyHeldEvent', keyboardEventObject);
+                }, keyHoldInterval);
+                return;
+            }
+        }
+
+        if (!heldKeys[event.code]) {
+            dotNetHelper.invokeMethodAsync('InvokeKeyDownEvent', keyboardEventObject);
             heldKeys[event.code] = setInterval(() => {
-                DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyHeldEvent', keyboardEventObject);
+                dotNetHelper.invokeMethodAsync('InvokeKeyHeldEvent', keyboardEventObject);
             }, keyHoldInterval);
         }
     });
 
     document.addEventListener("keyup", (event) => {
         const keyboardEventObject = createKeyboardEventObject(event);
-        DotNet.invokeMethodAsync('KeyBlazor', 'InvokeKeyReleasedEvent', keyboardEventObject);
+        dotNetHelper.invokeMethodAsync('InvokeKeyReleasedEvent', keyboardEventObject);
         if (heldKeys[event.code]) {
             clearInterval(heldKeys[event.code]);
             delete heldKeys[event.code];

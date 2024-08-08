@@ -14,12 +14,12 @@
             _keys.Clear();
         }
 
-        public bool IsMatching(Shortcut shortcut)
+        public bool IsMatching(HotKey hotKey)
         {
-            if (_keys.Count < shortcut.Keys.Length)
+            if (_keys.Count < hotKey.Keys.Length)
                 return false;
 
-            return !_keys.Where((t, i) => t != shortcut.Keys[i]).Any();
+            return !_keys.Where((t, i) => t != hotKey.Keys[i]).Any();
         }
 
         public override string ToString()

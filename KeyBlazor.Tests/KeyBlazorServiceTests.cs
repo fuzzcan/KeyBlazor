@@ -12,14 +12,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace KeyBlazorTests
 {
-    public class ServiceTests : TestContext
+    public class KeyBlazorServiceTests : TestContext
     {
-        public ServiceTests()
+        public KeyBlazorServiceTests()
         {
             Mock<IJSRuntime> jsRuntimeMock = new();
-            Mock<IOptions<KeyBlazor.Options>> optionsMock = new();
-            Mock<ILogger<KeyBlazor.Service>> loggerMock = new();
-            var options = new KeyBlazor.Options
+            Mock<IOptions<KeyBlazor.KeyBlazorOptions>> optionsMock = new();
+            Mock<ILogger<KeyBlazor.KeyBlazorService>> loggerMock = new();
+            var options = new KeyBlazor.KeyBlazorOptions
             {
                 KeyHoldInterval = 100,
                 Shortcuts = ["Ctrl+Shift+A"]
@@ -31,7 +31,7 @@ namespace KeyBlazorTests
             Services.AddSingleton(jsRuntimeMock.Object);
             Services.AddSingleton(optionsMock.Object);
             Services.AddSingleton(loggerMock.Object);
-            Services.AddSingleton<KeyBlazor.Service>();
+            Services.AddSingleton<KeyBlazor.KeyBlazorService>();
         }
 
         [Fact]
@@ -47,14 +47,14 @@ namespace KeyBlazorTests
         [Fact]
         public void HandleKeyDown_ShouldTriggerKeyDownEvent()
         {
-            var service = Services.GetRequiredService<KeyBlazor.Service>();
+            var service = Services.GetRequiredService<KeyBlazor.KeyBlazorService>();
             var eventTriggered = false;
             var args = new KeyboardEventArgs
             {
                 Key = "A", Code = "KeyA", CtrlKey = true, ShiftKey = true
             };
             service.KeyDown += _ => eventTriggered = true;
-            KeyBlazor.Service.InvokeKeyDownEvent(args);
+            KeyBlazor.KeyBlazorService.InvokeKeyDownEvent(args);
             // Assert
             Assert.True(eventTriggered);
         }
@@ -63,7 +63,7 @@ namespace KeyBlazorTests
         public void HandleKeyHeld_ShouldTriggerKeyHeldEvent()
         {
             // Arrange
-            var service = Services.GetRequiredService<KeyBlazor.Service>();
+            var service = Services.GetRequiredService<KeyBlazor.KeyBlazorService>();
             var eventTriggered = false;
             service.KeyHeld += _ => eventTriggered = true;
             var cut = RenderComponent<KeyBlazorComponent>();
@@ -76,7 +76,7 @@ namespace KeyBlazorTests
             });
 
             // Simulate key held event (normally you would have to wait or use a timer)
-            KeyBlazor.Service.InvokeKeyHeldEvent(
+            KeyBlazor.KeyBlazorService.InvokeKeyHeldEvent(
                 new KeyboardEventArgs
                 {
                     Key = "A", Code = "KeyA", CtrlKey = true, ShiftKey = true
@@ -90,7 +90,7 @@ namespace KeyBlazorTests
         public void HandleKeyReleased_ShouldTriggerKeyUpEvent()
         {
             // Arrange
-            var service = Services.GetRequiredService<KeyBlazor.Service>();
+            var service = Services.GetRequiredService<KeyBlazor.KeyBlazorService>();
             var eventTriggered = false;
             service.KeyUp += _ => eventTriggered = true;
             var cut = RenderComponent<KeyBlazorComponent>();

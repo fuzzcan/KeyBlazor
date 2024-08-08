@@ -1,10 +1,11 @@
 ﻿namespace KeyBlazor;
 
-public class Shortcut
+public class HotKey
 {
     public string[]? Keys { get; private init; }
+    public bool PreventDefaultBehaviour { get; set; }
 
-    public Shortcut(string? shortcut)
+    public HotKey(string? shortcut, bool preventDefaultBehaviour = false)
     {
         const string message = "Shortcut cannot be null or empty";
         if (string.IsNullOrWhiteSpace(shortcut))
@@ -13,5 +14,7 @@ public class Shortcut
         Keys = shortcut.Split('+')
             .Select(k => KeyMap.Normalize(k.Trim()))
             .ToArray();
+
+        PreventDefaultBehaviour = preventDefaultBehaviour;
     }
 }
