@@ -13,6 +13,6 @@ var baseAddress = builder.HostEnvironment.BaseAddress;
 var httpClient = new HttpClient { BaseAddress = new Uri(baseAddress) };
 builder.Services.AddScoped(sp => httpClient);
 
-services.AddScoped<KeyBlazor.KeyBlazor>();
+services.AddScoped<KeyBlazor.Service>();
 
 await builder.Build().RunAsync();

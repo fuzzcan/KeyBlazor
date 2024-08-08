@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace KeyBlazor
 {
-    public class KeyBlazor : IAsyncDisposable
+    public class Service : IAsyncDisposable
     {
-        private static KeyBlazor? _instance;
-        private readonly ILogger<KeyBlazor>? _logger;
+        private static Service? _instance;
+        private readonly ILogger<Service>? _logger;
         private readonly IJSRuntime _jsRuntime;
         private IJSObjectReference? _jsModule;
 
-        private readonly DotNetObjectReference<KeyBlazor>
+        private readonly DotNetObjectReference<Service>
             _jsReference;
 
         private readonly Options _options;
@@ -27,9 +27,9 @@ namespace KeyBlazor
         public event Action<KeyboardEventArgs>? KeyUp;
         public event Action<KeyboardEventArgs>? KeyHeld;
 
-        public KeyBlazor(
+        public Service(
             IOptions<Options> options, IJSRuntime jsRuntime,
-            ILogger<KeyBlazor>? logger = null)
+            ILogger<Service>? logger = null)
         {
             _logger = logger;
             _options = options.Value;
@@ -44,9 +44,8 @@ namespace KeyBlazor
         private async Task InitializeJsAsync()
         {
             const string path = "./_content/KeyBlazor/js/keyBlazor.js";
-            _jsModule =
-                await _jsRuntime.InvokeAsync<IJSObjectReference>("import",
-                    path);
+            _jsModule = await _jsRuntime
+                .InvokeAsync<IJSObjectReference>("import", path);
             await SetKeyHoldIntervalAsync(_options.KeyHoldInterval);
             await AddKeyboardEventListenerAsync();
         }
@@ -83,8 +82,8 @@ namespace KeyBlazor
         private async Task AddKeyboardEventListenerAsync()
         {
             if (_jsModule == null) return;
-            await _jsModule.InvokeVoidAsync("addKeyboardEventListener",
-                _jsReference);
+            await _jsModule.InvokeVoidAsync("addKeyboardEventListener", 
+                    _jsReference);
             _logger?.LogInformation("Added keyboard event listener");
         }
 
@@ -131,7 +130,6 @@ namespace KeyBlazor
         private void HandleKeyReleased(KeyboardEventArgs evt)
         {
             _logger?.LogDebug("Key up: {Key}", evt.Key);
-            _logger?.LogInformation("YOOHOO");
             KeyUp?.Invoke(evt);
             _currentKeySequence.Clear();
         }

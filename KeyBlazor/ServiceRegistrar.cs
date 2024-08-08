@@ -7,6 +7,6 @@ public static class ServiceRegistrar
 {
     public static void AddKeyBlazor(this IServiceCollection services)
     {
-        services.AddScoped<KeyBlazor>();
+        services.AddScoped<Service>();
     }
 }
